@@ -25,50 +25,10 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/apps": [
+    "/miscellaneous": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/apps.js"
-    ],
-    "/charts": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/charts.js"
-    ],
-    "/currency-exchange": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/currency-exchange.js"
-    ],
-    "/features": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/features.js"
-    ],
-    "/forms-tables": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/forms-tables.js"
-    ],
-    "/members": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/members.js"
-    ],
-    "/reports": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/reports.js"
-    ],
-    "/tickers": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/tickers.js"
-    ],
-    "/transactions": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/transactions.js"
+      "static/chunks/pages/miscellaneous.js"
     ]
   },
   "ampFirstPages": []

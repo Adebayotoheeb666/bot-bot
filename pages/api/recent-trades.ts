@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import ExchangeInstanceManager from '../../crypto-trading-bot/src/bot/user/ExchangeInstanceManager';
 import type { Trade } from '../../crypto-trading-bot/src/types';
