@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "title": "Crypto Trading Dashboard",
+    "trade": {
+      "currentTrades": "Current Trades",
+      "tradeSize": "Trade Size",
+      "stopLoss": "Stop Loss (%)",
+      "takeProfit": "Take Profit (%)",
+      "executeTrade": "Execute Trade",
+      "tradeExecuted": "Trade Executed",
+      "tradeFailed": "Trade Failed"
+    },
+    "notifications": {
+      "tradeSuccess": "Trade executed successfully!",
+      "tradeError": "There was an error executing the trade."
+    },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "tradeLimit": "Trade Limit",
+      "save": "Save Settings"
+    },
+    "performance": {
+      "title": "Performance",
+      "totalTrades": "Total Trades",
+      "successfulTrades": "Successful Trades",
+      "failedTrades": "Failed Trades",
+      "profitLoss": "Profit/Loss"
+    }
+  }
+}

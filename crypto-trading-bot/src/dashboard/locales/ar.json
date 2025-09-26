@@ -1,0 +1,22 @@
+{
+  "title": "بوت التداول",
+  "trading": {
+    "stopLoss": "وقف الخسارة",
+    "takeProfit": "جني الأرباح",
+    "tradeSize": "حجم التداول",
+    "tradeLimit": "حد التداولات"
+  },
+  "notifications": {
+    "tradeExecuted": "تم تنفيذ الصفقة",
+    "tradeFailed": "فشلت الصفقة"
+  },
+  "dashboard": {
+    "performance": "الأداء",
+    "settings": "الإعدادات",
+    "language": "اللغة"
+  },
+  "errors": {
+    "apiConnection": "فشل الاتصال بواجهة برمجة التطبيقات",
+    "invalidTrade": "صفقة غير صالحة"
+  }
+}

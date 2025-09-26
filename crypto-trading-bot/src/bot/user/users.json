@@ -1,0 +1,8 @@
+[
+  {
+    "id": "demo",
+    "name": "Demo User",
+    "apiKey": "demo-key",
+    "apiSecret": "demo-secret"
+  }
+]

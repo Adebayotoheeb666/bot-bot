@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"pages/index.tsx -> ../crypto-trading-bot/src/dashboard/components/Dashboard\":{\"id\":\"pages/index.tsx -> ../crypto-trading-bot/src/dashboard/components/Dashboard\",\"files\":[\"static/chunks/_pages-dir-browser_crypto-trading-bot_src_dashboard_components_Dashboard_tsx.js\"]}}"
