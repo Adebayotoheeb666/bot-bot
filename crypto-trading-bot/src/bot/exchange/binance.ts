@@ -1,4 +1,5 @@
-import axios, { Method } from 'axios';
+import axios, { Method, isAxiosError } from 'axios';
+import crypto from 'crypto';
 import { IExchange } from './IExchange';
 import { TelegramNotifier } from '../notifications/telegram';
 import { MachineLearningAdapter } from '../machine-learning';
@@ -7,7 +8,7 @@ import { User } from '../user/UserManager';
 export class BinanceExchange implements IExchange {
     private apiKey: string = '';
     private apiSecret: string = '';
-    private baseUrl: string = 'https://api.binance.com/api/v3';
+    private baseUrl: string = process.env.BINANCE_BASE_URL || 'https://api.binance.com/api/v3';
     private tradeLimit: number = 5; // Default max trades per session
     private tradesExecuted: number = 0;
     private minTradeSize: number = 0.001; // Example minimum trade size
@@ -30,9 +31,13 @@ export class BinanceExchange implements IExchange {
         this.demoMode = !this.apiKey || !this.apiSecret;
     }
 
+    private isSignedEndpoint(endpoint: string): boolean {
+        // Known signed endpoints; extend as needed
+        return ['/account', '/order', '/order/oco', '/openOrders', '/myTrades'].includes(endpoint);
+    }
+
     private async sendRequest(endpoint: string, method: string = 'GET', data: any = null) {
         if (this.demoMode) {
-            // Demo mode: return mock data for known endpoints
             if (endpoint === '/exchangeInfo') {
                 return { symbols: [{ symbol: 'BTCUSDT' }, { symbol: 'ETHUSDT' }] };
             }
@@ -42,30 +47,59 @@ export class BinanceExchange implements IExchange {
             if (endpoint === '/order' || endpoint === '/order/oco') {
                 return { status: 'FILLED', orderId: Math.floor(Math.random() * 100000) };
             }
-            // Default mock response
             return { demo: true, endpoint };
         }
-        const url = `${this.baseUrl}${endpoint}`;
-        const headers = {
+
+        const methodUpper = (method || 'GET').toUpperCase();
+        let url = `${this.baseUrl}${endpoint}`;
+        const headers: Record<string, string> = {
             'X-MBX-APIKEY': this.apiKey,
         };
 
-        const config = {
-            method: method as Method,
-            url,
-            headers,
-            data,
-        };
-
         try {
-            const response = await axios(config);
-            return response.data;
-        } catch (error) {
+            // Prepare params/signature
+            if (this.isSignedEndpoint(endpoint)) {
+                const params = { ...(data || {}), timestamp: Date.now(), recvWindow: 5000 } as Record<string, any>;
+                const qs = new URLSearchParams(
+                    Object.entries(params).map(([k, v]) => [k, v !== undefined && v !== null ? String(v) : ''])
+                ).toString();
+                const signature = crypto.createHmac('sha256', this.apiSecret).update(qs).digest('hex');
+
+                if (methodUpper === 'GET') {
+                    url = `${url}?${qs}&signature=${signature}`;
+                    const response = await axios({ method: 'GET', url, headers });
+                    return response.data;
+                } else {
+                    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    const body = `${qs}&signature=${signature}`;
+                    const response = await axios({ method: methodUpper as Method, url, headers, data: body });
+                    return response.data;
+                }
+            } else {
+                if (methodUpper === 'GET') {
+                    const qs = data ? new URLSearchParams(
+                        Object.entries(data).map(([k, v]) => [k, v !== undefined && v !== null ? String(v) : ''])
+                    ).toString() : '';
+                    if (qs) url = `${url}?${qs}`;
+                    const response = await axios({ method: 'GET', url, headers });
+                    return response.data;
+                } else {
+                    const response = await axios({ method: methodUpper as Method, url, headers, data });
+                    return response.data;
+                }
+            }
+        } catch (error: any) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                const msg = error.response?.data?.msg || error.message;
+                throw new Error(
+                    `Binance API request failed${status ? ` (status ${status})` : ''}: ${msg}`
+                );
+            }
             if (error instanceof Error) {
                 throw new Error(`Binance API request failed: ${error.message}`);
-            } else {
-                throw new Error('Binance API request failed: Unknown error');
             }
+            throw new Error('Binance API request failed: Unknown error');
         }
     }
 
@@ -119,19 +153,15 @@ export class BinanceExchange implements IExchange {
         // OCO order for stop-loss/take-profit
         let result;
         if (stopLoss && takeProfit) {
-            // Binance OCO endpoint is /api/v3/order/oco (not /api/v3)
-            const ocoEndpoint = 'https://api.binance.com/api/v3/order/oco';
             const ocoOrderData: any = {
                 symbol,
                 side,
                 quantity,
-                price: takeProfit, // take-profit price
-                stopPrice: stopLoss, // stop-loss trigger price
-                stopLimitPrice: stopLoss, // stop-loss limit price
+                price: takeProfit,
+                stopPrice: stopLoss,
+                stopLimitPrice: stopLoss,
                 stopLimitTimeInForce: 'GTC',
             };
-            // OCO requires API key and signature (HMAC SHA256)
-            // For simplicity, assume the sendRequest method is extended to handle full URLs and signing if needed
             this.tradesExecuted++;
             result = await this.sendRequest('/order/oco', 'POST', ocoOrderData);
         } else {
