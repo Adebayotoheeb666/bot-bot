@@ -3,5 +3,14 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/api/recent-trades": "pages/api/recent-trades.js"
+  "/reports": "pages/reports.js",
+  "/api/recent-trades": "pages/api/recent-trades.js",
+  "/currency-exchange": "pages/currency-exchange.js",
+  "/members": "pages/members.js",
+  "/tickers": "pages/tickers.js",
+  "/transactions": "pages/transactions.js",
+  "/charts": "pages/charts.js",
+  "/apps": "pages/apps.js",
+  "/features": "pages/features.js",
+  "/forms-tables": "pages/forms-tables.js"
 }
